@@ -2,28 +2,23 @@
 
 > A production-style, real-time road accident monitoring command center for Tamil Nadu — built with FastAPI, SQLite, Server-Sent Events, and a pure HTML/CSS/JS frontend.
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110-green)
-![Status](https://img.shields.io/badge/Status-Live-brightgreen)
-
 ---
 
-## 📸 Overview
+##  Overview
 
 | Feature | Description |
 |---------|------------|
-| 🗺️ Live District Map | SVG Tamil Nadu map, color-coded by risk severity (Critical/High/Moderate/Low) |
-| 📡 Real-Time Updates | Server-Sent Events (SSE) push new accidents, alerts, and KPI changes every ~6 seconds |
-| 📊 Live Charts | 24h accident trend line + district bar chart (Chart.js) |
-| 🚨 Alert Feed | SEV-1 (Fatal) / SEV-2 (Major) / SEV-3 (Minor) live alert stream |
-| 🏆 Risk Ranking | Top-5 danger zones leaderboard with risk score bars |
-| 📋 Reports | Full district report table with CSV export |
-| 🖥️ System Status | 11-service health monitoring panel (TN Police, NCRB, Highway Authority, etc.) |
+| Live District Map | SVG Tamil Nadu map, color-coded by risk severity (Critical/High/Moderate/Low) |
+| Real-Time Updates | Server-Sent Events (SSE) push new accidents, alerts, and KPI changes every ~6 seconds |
+| Live Charts | 24h accident trend line + district bar chart (Chart.js) |
+| Alert Feed | SEV-1 (Fatal) / SEV-2 (Major) / SEV-3 (Minor) live alert stream |
+| Risk Ranking | Top-5 danger zones leaderboard with risk score bars |
+| Reports | Full district report table with CSV export |
+| System Status | 11-service health monitoring panel (TN Police, NCRB, Highway Authority, etc.) |
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────┐
@@ -49,7 +44,7 @@
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 TN-Real-Time-Accident-Dashboard/
@@ -82,7 +77,7 @@ TN-Real-Time-Accident-Dashboard/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Clone the repo
 ```bash
@@ -128,7 +123,7 @@ Or double-click `index.html` — no additional server needed.
 
 ---
 
-## 🌐 API Reference
+##  API Reference
 
 **Base URL**: `http://localhost:8000`  
 **Interactive Docs**: http://localhost:8000/docs
@@ -165,7 +160,7 @@ Or double-click `index.html` — no additional server needed.
 
 ---
 
-## 🔄 Live Data Flow
+##  Live Data Flow
 
 ```
 ingestion.py (every 6s)
@@ -191,7 +186,7 @@ ingestion.py (every 6s)
 
 ---
 
-## 🎨 Design System
+##  Design System
 
 | Token | Value |
 |-------|-------|
@@ -240,7 +235,7 @@ SEED_INTERVAL_SECONDS=6
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -257,7 +252,7 @@ SEED_INTERVAL_SECONDS=6
 
 ---
 
-## 🔮 Future Roadmap
+##  Future Roadmap
 
 - [ ] Connect to real TN Police / NCRB accident data API
 - [ ] Leaflet + OpenStreetMap integration for real geo map
@@ -268,16 +263,6 @@ SEED_INTERVAL_SECONDS=6
 - [ ] Docker Compose setup
 - [ ] Dark/Light mode toggle
 
----
-
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
-## 👤 Author
-
-**Chandren** — [@Chandren](https://github.com/Chandren)
-
-> Built as a demonstration of real-time government intelligence dashboards using modern web and backend technologies.
