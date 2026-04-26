@@ -1,0 +1,30 @@
+# Python
+backend/.venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.egg-info/
+backend/dist/
+backend/build/
+
+# Database (local SQLite — do not commit)
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+
+# Environment secrets
+backend/.env
+!backend/.env.example
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TN ACCIDENT INTEL — System Status</title>
+    <meta name="description"
+        content="System health status, data feed monitoring, and sensor network uptime for TN Accident Intel." />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+    <nav class="topnav">
+        <div class="topnav-brand">
+            <span class="material-symbols-outlined">radar</span>
+            TN ACCIDENT INTEL
+        </div>
+        <div class="topnav-right">
+            <span id="live-clock" class="topnav-clock">—</span>
+            <button class="topnav-icon-btn notification-badge"><span
+                    class="material-symbols-outlined">notifications</span></button>
+        </div>
+    </nav>
+    <div class="layout">
+        <aside class="sidenav">
+            <div class="sidenav-section-label">OPERATIONS<div class="sidenav-sub">CHENNAI HQ</div>
+            </div>
+            <nav class="sidenav-nav">
+                <a href="index.html" class="nav-link"><span class="material-symbols-outlined">dashboard</span>Real-time
+                    Dashboard</a>
+                <a href="district-analysis.html" class="nav-link"><span
+                        class="material-symbols-outlined">analytics</span>District Analysis</a>
+                <a href="hotspot-maps.html" class="nav-link"><span class="material-symbols-outlined">map</span>Hotspot
+                    Maps</a>
+                <a href="reports.html" class="nav-link"><span
+                        class="material-symbols-outlined">description</span>Reports</a>
+            </nav>
+            <div class="sidenav-footer">
+                <a href="system-status.html" class="nav-link active"><span
+                        class="material-symbols-outlined">sensors</span>System Status</a>
+                <a href="#" class="nav-link"><span class="material-symbols-outlined">settings</span>Settings</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <div class="flex items-center justify-between" style="margin-bottom:20px;">
+                <div>
+                    <h1 style="font-family:var(--font-head);font-size:22px;font-weight:700;">System Status</h1>
+                    <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Live data feeds, sensor network,
+                        and system health monitoring</div>
+                </div>
+                <div class="flex items-center gap-2"
+                    style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:6px;padding:8px 14px;">
+                    <span class="status-pip live"></span>
+                    <span style="font-size:13px;font-weight:700;color:#22c55e;">ALL SYSTEMS OPERATIONAL</span>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+                <!-- System Uptime -->
+                <div class="glass-panel glow-cyan" style="padding:20px;">
+                    <div
+                        style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">
+                        System Uptime</div>
+                    <div class="uptime-counter" id="uptime-display">00:00:00</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Continuous operational time
+                    </div>
+                </div>
+                <!-- Data Feed -->
+                <div class="glass-panel" style="padding:20px;">
+                    <div
+                        style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">
+                        Data Feed Rate</div>
+                    <div style="font-family:var(--font-head);font-size:32px;font-weight:700;color:var(--primary);"
+                        id="feed-rate">5<span style="font-size:16px;font-weight:400;">s</span></div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Update interval — real-time
+                    </div>
+                </div>
+                <!-- Districts Online -->
+                <div class="glass-panel" style="padding:20px;">
+                    <div
+                        style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">
+                        Districts Online</div>
+                    <div style="font-family:var(--font-head);font-size:32px;font-weight:700;color:#22c55e;">38<span
+                            style="font-size:16px;font-weight:400;color:var(--text-muted);"> / 38</span></div>
+                    <div style="font-size:11px;color:#22c55e;margin-top:6px;">100% coverage</div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:12px;">
+
+                <!-- Data Feeds Status -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><span class="material-symbols-outlined"
+                                style="font-size:15px;">wifi</span>DATA FEED STATUS</div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="feed-list"></div>
+                    </div>
+                </div>
+
+                <!-- Regional Sensor Health -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><span class="material-symbols-outlined"
+                                style="font-size:15px;">sensors</span>REGIONAL SENSOR HEALTH</div>
+                    </div>
+                    <div class="panel-body" id="sensor-health"></div>
+                </div>
+
+            </div>
+
+            <!-- System Log -->
+            <div class="glass-panel" style="margin-top:12px;">
+                <div class="panel-header">
+                    <div class="panel-title"><span class="material-symbols-outlined"
+                            style="font-size:15px;">terminal</span>SYSTEM LOG</div>
+                    <button class="btn btn-ghost" onclick="clearLog()"
+                        style="font-size:11px;padding:4px 8px;">Clear</button>
+                </div>
+                <div id="system-log"
+                    style="padding:12px;max-height:200px;overflow-y:auto;font-family:monospace;font-size:12px;color:#849495;display:flex;flex-direction:column;gap:4px;">
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        const FEEDS = [
+            { name: 'TN Police Accident Feed', status: 'live', latency: '48ms', lastSync: '0s ago' },
+            { name: 'NCRB District Data Stream', status: 'live', latency: '120ms', lastSync: '2s ago' },
+            { name: 'Highway Authority Network', status: 'live', latency: '89ms', lastSync: '0s ago' },
+            { name: 'Emergency Services API', status: 'live', latency: '55ms', lastSync: '1s ago' },
+            { name: 'NDRF Alert Integration', status: 'live', latency: '210ms', lastSync: '3s ago' },
+            { name: 'Weather & Road Conditions', status: 'warning', latency: '450ms', lastSync: '18s ago' },
+            { name: 'Municipal CCTV Feed', status: 'live', latency: '88ms', lastSync: '0s ago' },
+            { name: 'Ambulance Dispatch System', status: 'live', latency: '34ms', lastSync: '0s ago' },
+        ];
+
+        const REGIONS = [
+            { name: 'North TN (Chennai, Vellore, Kancheepuram)', health: 99 },
+            { name: 'Central TN (Salem, Namakkal, Erode)', health: 97 },
+            { name: 'West TN (Coimbatore, Tiruppur, Nilgiris)', health: 98 },
+            { name: 'South TN (Madurai, Tirunelveli, Thoothukudi)', health: 96 },
+            { name: 'Delta (Thanjavur, Trichy, Nagapattinam)', health: 95 },
+            { name: 'East TN (Cuddalore, Villupuram)', health: 100 },
+        ];
+
+        function renderFeeds() {
+            const container = document.getElementById('feed-list');
+            if (!container) return;
+            container.innerHTML = FEEDS.map(f => `
+      <div class="status-indicator">
+        <div class="status-pip ${f.status}"></div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;">${f.name}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Latency: ${f.latency} · Last sync: ${f.lastSync}</div>
+        </div>
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:${f.status === 'live' ? '#22c55e' : f.status === 'warning' ? '#FFA500' : '#FF4D4D'};text-transform:uppercase;">${f.status}</span>
+      </div>
+    `).join('');
+        }
+
+        function renderSensorHealth() {
+            const container = document.getElementById('sensor-health');
+            if (!container) return;
+            container.innerHTML = REGIONS.map(r => `
+      <div style="margin-bottom:14px;">
+        <div class="flex items-center justify-between" style="margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:500;">${r.name}</span>
+          <span style="font-size:12px;font-weight:700;color:${r.health >= 98 ? '#22c55e' : r.health >= 95 ? '#00F0FF' : '#FFA500'};">${r.health}%</span>
+        </div>
+        <div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;">
+          <div style="height:100%;width:${r.health}%;border-radius:3px;background:${r.health >= 98 ? '#22c55e' : r.health >= 95 ? '#00F0FF' : '#FFA500'};transition:width 1s;"></div>
+        </div>
+      </div>
+    `).join('');
+        }
+
+        // Uptime counter
+        let startTime = Date.now();
+        function updateUptime() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+            const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+            const s = String(elapsed % 60).padStart(2, '0');
+            const el = document.getElementById('uptime-display');
+            if (el) el.textContent = `${h}:${m}:${s}`;
+        }
+
+        // System log
+        const LOG_MESSAGES = [
+            'Data ingestion cycle complete — 38 districts updated',
+            'Alert threshold triggered — Chennai District (risk:92)',
+            'NCRB feed heartbeat received',
+            'Anomaly detection scan complete — 3 hotspots flagged',
+            'Police API sync successful',
+            'Highway sensor network ping — all nodes responsive',
+            'Emergency alert dispatched — Coimbatore NH-544',
+            'District risk scores recalculated',
+            'Map rendering update complete',
+            'Feed rate normalized — latency within threshold',
+        ];
+
+        function addLog(msg) {
+            const container = document.getElementById('system-log');
+            if (!container) return;
+            const now = new Date().toLocaleTimeString('en-IN', { hour12: false });
+            const el = document.createElement('div');
+            el.innerHTML = `<span style="color:var(--primary);">[${now}]</span> <span style="color:#dee2ec;">${msg}</span>`;
+            container.insertBefore(el, container.firstChild);
+            while (container.children.length > 30) container.removeChild(container.lastChild);
+        }
+
+        function clearLog() {
+            const c = document.getElementById('system-log'); if (c) c.innerHTML = '';
+        }
+
+        setInterval(() => { const el = document.getElementById('live-clock'); if (el) el.textContent = new Date().toLocaleTimeString('en-IN', { hour12: false }); }, 1000);
+        setInterval(updateUptime, 1000);
+        setInterval(() => { addLog(LOG_MESSAGES[Math.floor(Math.random() * LOG_MESSAGES.length)]); }, 4000);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFeeds();
+            renderSensorHealth();
+            updateUptime();
+            addLog('System initialized — TN Accident Intel v2.0 LIVE');
+            addLog('All 38 district data feeds connected');
+            addLog('Real-time monitoring active — update interval: 5s');
+        });
+    </script>
+</body>
+
+</html>

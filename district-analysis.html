@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TN ACCIDENT INTEL — District Analysis</title>
+    <meta name="description"
+        content="District-wise accident analysis for all 38 Tamil Nadu districts with sortable data table and charts." />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <nav class="topnav">
+        <div class="topnav-brand">
+            <span class="material-symbols-outlined">radar</span>
+            TN ACCIDENT INTEL
+        </div>
+        <div class="topnav-search">
+            <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted);">search</span>
+            <input type="text" id="district-search" placeholder="Filter districts..."
+                oninput="filterTable(this.value)" />
+        </div>
+        <div class="topnav-right">
+            <span id="live-clock" class="topnav-clock">—</span>
+            <button class="topnav-icon-btn notification-badge" title="Notifications">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <aside class="sidenav">
+            <div class="sidenav-section-label">OPERATIONS<div class="sidenav-sub">CHENNAI HQ</div>
+            </div>
+            <nav class="sidenav-nav">
+                <a href="index.html" class="nav-link"><span class="material-symbols-outlined">dashboard</span>Real-time
+                    Dashboard</a>
+                <a href="district-analysis.html" class="nav-link active"><span
+                        class="material-symbols-outlined">analytics</span>District Analysis</a>
+                <a href="hotspot-maps.html" class="nav-link"><span class="material-symbols-outlined">map</span>Hotspot
+                    Maps</a>
+                <a href="reports.html" class="nav-link"><span
+                        class="material-symbols-outlined">description</span>Reports</a>
+            </nav>
+            <div class="sidenav-footer">
+                <a href="system-status.html" class="nav-link"><span
+                        class="material-symbols-outlined">sensors</span>System Status</a>
+                <a href="#" class="nav-link"><span class="material-symbols-outlined">settings</span>Settings</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <!-- Page Header -->
+            <div class="flex items-center justify-between" style="margin-bottom:16px;">
+                <div>
+                    <h1 style="font-family:var(--font-head);font-size:22px;font-weight:700;color:var(--text);">District
+                        Analysis</h1>
+                    <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">All 38 Tamil Nadu districts —
+                        accident data, fatalities, risk scores</div>
+                </div>
+                <div class="flex gap-2">
+                    <button class="btn btn-ghost" onclick="sortTable('riskScore')">
+                        <span class="material-symbols-outlined" style="font-size:15px;">sort</span> Sort by Risk
+                    </button>
+                    <button class="btn btn-primary" onclick="exportCSV()">
+                        <span class="material-symbols-outlined" style="font-size:15px;">download</span> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPIs -->
+            <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
+                <div class="kpi-card kpi-cyan">
+                    <div class="kpi-label">Total Districts</div>
+                    <div class="kpi-value cyan">38</div>
+                </div>
+                <div class="kpi-card kpi-red">
+                    <div class="kpi-label">Critical Districts</div>
+                    <div class="kpi-value red" id="da-critical">—</div>
+                </div>
+                <div class="kpi-card kpi-orange">
+                    <div class="kpi-label">High-Risk Districts</div>
+                    <div class="kpi-value orange" id="da-high">—</div>
+                </div>
+                <div class="kpi-card kpi-green" style="--kpi-accent:var(--success);">
+                    <div class="kpi-label" style="--tw-ring-color:var(--success);">Safe Districts</div>
+                    <div class="kpi-value green" id="da-safe">—</div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:12px;margin-bottom:16px;">
+
+                <!-- Stacked bar chart -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="material-symbols-outlined" style="font-size:15px;">bar_chart</span>
+                            TOP 20 DISTRICTS — ACCIDENTS vs FATALITIES
+                        </div>
+                    </div>
+                    <div class="panel-body" style="padding-bottom:12px;">
+                        <div style="height:240px;">
+                            <canvas id="district-stacked-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donut: severity breakdown -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="material-symbols-outlined" style="font-size:15px;">donut_large</span>
+                            SEVERITY BREAKDOWN
+                        </div>
+                    </div>
+                    <div class="panel-body"
+                        style="display:flex;align-items:center;justify-content:center;gap:24px;padding-bottom:12px;">
+                        <div style="height:200px;width:200px;">
+                            <canvas id="severity-donut-chart"></canvas>
+                        </div>
+                        <div id="donut-legend" style="font-size:12px;display:flex;flex-direction:column;gap:8px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span class="material-symbols-outlined" style="font-size:15px;">table_chart</span>
+                        ALL DISTRICTS — LIVE DATA
+                    </div>
+                    <span style="font-size:11px;color:var(--text-muted);"><span class="live-dot"></span> Auto-updating
+                        every 5s</span>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="data-table" id="district-table">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('name')">#&nbsp; District ⇅</th>
+                                <th onclick="sortTable('accidents')">Accidents ⇅</th>
+                                <th onclick="sortTable('fatal')">Fatalities ⇅</th>
+                                <th onclick="sortTable('riskScore')">Risk Score ⇅</th>
+                                <th>Severity</th>
+                                <th>Trend</th>
+                                <th>Risk Bar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="district-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        const sevColor = { critical: '#FF4D4D', high: '#FFA500', moderate: '#00F0FF', low: '#22c55e' };
+        let sortKey = 'riskScore', sortDir = -1;
+        let filterText = '';
+
+        function renderTable() {
+            const tbody = document.getElementById('district-tbody');
+            if (!tbody) return;
+            let districts = window.TNDATA.getDistricts()
+                .filter(d => d.name.toLowerCase().includes(filterText.toLowerCase()));
+            districts.sort((a, b) => {
+                if (sortKey === 'name') return sortDir * a.name.localeCompare(b.name);
+                return sortDir * (b[sortKey] - a[sortKey]);
+            });
+            tbody.innerHTML = districts.map((d, i) => `
+      <tr>
+        <td><b>${i + 1}</b>&nbsp;&nbsp;${d.name}</td>
+        <td style="color:var(--text);font-weight:600;">${d.accidents}</td>
+        <td style="color:${d.fatal > 2 ? '#FF4D4D' : '#dee2ec'};">${d.fatal}</td>
+        <td style="font-weight:700;color:${sevColor[d.severity]};">${d.riskScore}</td>
+        <td>
+          <span class="severity-dot" style="background:${sevColor[d.severity]};"></span>
+          <span style="font-size:11px;color:${sevColor[d.severity]};font-weight:600;text-transform:uppercase;">${d.severity}</span>
+        </td>
+        <td style="color:${d.trend === 'up' ? '#FF4D4D' : '#22c55e'};">
+          <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">${d.trend === 'up' ? 'trending_up' : 'trending_down'}</span>
+        </td>
+        <td>
+          <div class="risk-bar-bg"><div class="risk-bar-fill" style="width:${Math.min(100, d.riskScore)}%;background:${sevColor[d.severity]};"></div></div>
+        </td>
+      </tr>
+    `).join('');
+        }
+
+        function sortTable(key) {
+            if (sortKey === key) sortDir *= -1;
+            else { sortKey = key; sortDir = -1; }
+            renderTable();
+        }
+
+        function filterTable(val) {
+            filterText = val;
+            renderTable();
+        }
+
+        function updateSummaryKPIs() {
+            const districts = window.TNDATA.getDistricts();
+            document.getElementById('da-critical').textContent = districts.filter(d => d.severity === 'critical').length;
+            document.getElementById('da-high').textContent = districts.filter(d => d.severity === 'high').length;
+            document.getElementById('da-safe').textContent = districts.filter(d => d.severity === 'low').length;
+        }
+
+        function initStackedChart() {
+            const ctx = document.getElementById('district-stacked-chart');
+            if (!ctx) return;
+            const districts = window.TNDATA.getDistricts().sort((a, b) => b.accidents - a.accidents).slice(0, 20);
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: districts.map(d => d.name.length > 8 ? d.name.slice(0, 7) + '…' : d.name),
+                    datasets: [
+                        { label: 'Accidents', data: districts.map(d => d.accidents), backgroundColor: 'rgba(0,240,255,0.5)', borderColor: '#00F0FF', borderWidth: 1, borderRadius: 3 },
+                        { label: 'Fatalities', data: districts.map(d => d.fatal), backgroundColor: 'rgba(255,77,77,0.7)', borderColor: '#FF4D4D', borderWidth: 1, borderRadius: 3 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    animation: { duration: 800 },
+                    plugins: {
+                        legend: { display: true, labels: { color: '#849495', font: { family: 'Inter', size: 11 } } },
+                        tooltip: { backgroundColor: 'rgba(22,27,34,0.95)', borderColor: 'rgba(0,240,255,0.3)', borderWidth: 1, titleColor: '#00F0FF', bodyColor: '#dee2ec' }
+                    },
+                    scales: {
+                        x: { stacked: false, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#849495', font: { size: 10 }, maxRotation: 45 } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#849495', font: { size: 11 } }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function initDonutChart() {
+            const ctx = document.getElementById('severity-donut-chart');
+            if (!ctx) return;
+            const districts = window.TNDATA.getDistricts();
+            const counts = { critical: 0, high: 0, moderate: 0, low: 0 };
+            districts.forEach(d => { counts[d.severity] = (counts[d.severity] || 0) + 1; });
+            const labels = ['Critical', 'High', 'Moderate', 'Low'];
+            const values = [counts.critical, counts.high, counts.moderate, counts.low];
+            const colors = ['#FF4D4D', '#FFA500', '#00F0FF', '#22c55e'];
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels, datasets: [{ data: values, backgroundColor: colors.map(c => c + '99'), borderColor: colors, borderWidth: 1.5 }] },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '65%',
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(22,27,34,0.95)', borderColor: 'rgba(0,240,255,0.3)', borderWidth: 1, titleColor: '#00F0FF', bodyColor: '#dee2ec' } }
+                }
+            });
+            const legend = document.getElementById('donut-legend');
+            if (legend) {
+                legend.innerHTML = labels.map((l, i) => `
+        <div class="flex items-center gap-2">
+          <span style="width:10px;height:10px;border-radius:50%;background:${colors[i]};display:inline-block;flex-shrink:0;"></span>
+          <span style="color:#dee2ec;">${l}: <b style="color:${colors[i]}">${values[i]}</b></span>
+        </div>`).join('');
+            }
+        }
+
+        function exportCSV() {
+            const districts = window.TNDATA.getDistricts().sort((a, b) => b.riskScore - a.riskScore);
+            const header = 'District,Accidents,Fatalities,Risk Score,Severity\n';
+            const rows = districts.map(d => `${d.name},${d.accidents},${d.fatal},${d.riskScore},${d.severity}`).join('\n');
+            const blob = new Blob([header + rows], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'tn_accident_data.csv'; a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Clock
+        setInterval(() => {
+            const el = document.getElementById('live-clock');
+            if (el) el.textContent = new Date().toLocaleTimeString('en-IN', { hour12: false });
+        }, 1000);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            updateSummaryKPIs();
+            initStackedChart();
+            initDonutChart();
+            document.addEventListener('tn:update', () => { renderTable(); updateSummaryKPIs(); });
+        });
+    </script>
+</body>
+
+</html>

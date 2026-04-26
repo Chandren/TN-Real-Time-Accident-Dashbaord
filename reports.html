@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TN ACCIDENT INTEL — Reports</title>
+    <meta name="description" content="Accident data reports and CSV export for Tamil Nadu districts." />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <nav class="topnav">
+        <div class="topnav-brand">
+            <span class="material-symbols-outlined">radar</span>
+            TN ACCIDENT INTEL
+        </div>
+        <div class="topnav-right">
+            <span id="live-clock" class="topnav-clock">—</span>
+            <button class="topnav-icon-btn notification-badge"><span
+                    class="material-symbols-outlined">notifications</span></button>
+        </div>
+    </nav>
+    <div class="layout">
+        <aside class="sidenav">
+            <div class="sidenav-section-label">OPERATIONS<div class="sidenav-sub">CHENNAI HQ</div>
+            </div>
+            <nav class="sidenav-nav">
+                <a href="index.html" class="nav-link"><span class="material-symbols-outlined">dashboard</span>Real-time
+                    Dashboard</a>
+                <a href="district-analysis.html" class="nav-link"><span
+                        class="material-symbols-outlined">analytics</span>District Analysis</a>
+                <a href="hotspot-maps.html" class="nav-link"><span class="material-symbols-outlined">map</span>Hotspot
+                    Maps</a>
+                <a href="reports.html" class="nav-link active"><span
+                        class="material-symbols-outlined">description</span>Reports</a>
+            </nav>
+            <div class="sidenav-footer">
+                <a href="system-status.html" class="nav-link"><span
+                        class="material-symbols-outlined">sensors</span>System Status</a>
+                <a href="#" class="nav-link"><span class="material-symbols-outlined">settings</span>Settings</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <div class="flex items-center justify-between" style="margin-bottom:20px;">
+                <div>
+                    <h1 style="font-family:var(--font-head);font-size:22px;font-weight:700;">Reports</h1>
+                    <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Tamil Nadu Road Safety —
+                        Accident Intelligence Report</div>
+                </div>
+                <div class="flex gap-2">
+                    <button class="btn btn-primary" onclick="exportCSV()">
+                        <span class="material-symbols-outlined" style="font-size:15px;">download</span> Export CSV
+                    </button>
+                    <button class="btn btn-ghost" onclick="window.print()">
+                        <span class="material-symbols-outlined" style="font-size:15px;">print</span> Print
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Summary Section -->
+            <div class="glass-panel" style="margin-bottom:16px;padding:20px 24px;">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+                    <div style="border-right:1px solid var(--border);padding-right:20px;">
+                        <div
+                            style="font-size:10px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">
+                            Report Period</div>
+                        <div style="font-family:var(--font-head);font-size:16px;font-weight:700;" id="report-date">Today
+                        </div>
+                        <div style="font-size:11px;color:var(--text-muted);">April 26, 2026</div>
+                    </div>
+                    <div style="border-right:1px solid var(--border);padding-right:20px;">
+                        <div
+                            style="font-size:10px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">
+                            Total Accidents</div>
+                        <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--primary);"
+                            id="rep-total">—</div>
+                    </div>
+                    <div style="border-right:1px solid var(--border);padding-right:20px;">
+                        <div
+                            style="font-size:10px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">
+                            Total Fatalities</div>
+                        <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--secondary);"
+                            id="rep-fatal">—</div>
+                    </div>
+                    <div>
+                        <div
+                            style="font-size:10px;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">
+                            Critical Districts</div>
+                        <div style="font-family:var(--font-head);font-size:28px;font-weight:700;color:var(--tertiary);"
+                            id="rep-critical">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+
+                <!-- Top Districts by Accidents -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><span class="material-symbols-outlined"
+                                style="font-size:15px;">bar_chart</span>TOP 10 DISTRICTS — ACCIDENT COUNT</div>
+                    </div>
+                    <div class="panel-body" style="padding-bottom:12px;">
+                        <div style="height:220px;"><canvas id="reports-bar-chart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Hourly accident distribution -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><span class="material-symbols-outlined"
+                                style="font-size:15px;">schedule</span>HOURLY ACCIDENT DISTRIBUTION</div>
+                    </div>
+                    <div class="panel-body" style="padding-bottom:12px;">
+                        <div style="height:220px;"><canvas id="hourly-chart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Report Table -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="panel-title"><span class="material-symbols-outlined"
+                            style="font-size:15px;">table_chart</span>COMPLETE DISTRICT REPORT</div>
+                    <button class="btn btn-ghost" onclick="exportCSV()" style="font-size:11px;padding:4px 10px;">
+                        <span class="material-symbols-outlined" style="font-size:13px;">download</span> CSV
+                    </button>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="data-table" id="report-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>District</th>
+                                <th>Accidents</th>
+                                <th>Fatalities</th>
+                                <th>Injury Rate</th>
+                                <th>Risk Score</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        const sevColor = { critical: '#FF4D4D', high: '#FFA500', moderate: '#00F0FF', low: '#22c55e' };
+
+        function updateReport() {
+            const districts = window.TNDATA.getDistricts();
+            const total = districts.reduce((s, d) => s + d.accidents, 0);
+            const fatal = districts.reduce((s, d) => s + d.fatal, 0);
+            const critical = districts.filter(d => d.severity === 'critical').length;
+            document.getElementById('rep-total').textContent = total;
+            document.getElementById('rep-fatal').textContent = fatal;
+            document.getElementById('rep-critical').textContent = critical;
+
+            const tbody = document.getElementById('report-tbody');
+            if (tbody) {
+                const sorted = [...districts].sort((a, b) => b.riskScore - a.riskScore);
+                tbody.innerHTML = sorted.map((d, i) => `
+        <tr>
+          <td style="color:var(--text-muted);">${i + 1}</td>
+          <td style="font-weight:600;">${d.name}</td>
+          <td>${d.accidents}</td>
+          <td style="color:${d.fatal > 2 ? '#FF4D4D' : '#dee2ec'};">${d.fatal}</td>
+          <td>${d.accidents > 0 ? ((d.fatal / d.accidents) * 100).toFixed(1) + '%' : '0%'}</td>
+          <td style="font-weight:700;color:${sevColor[d.severity]};">${d.riskScore}</td>
+          <td><span class="severity-dot" style="background:${sevColor[d.severity]};"></span><span style="font-size:11px;color:${sevColor[d.severity]};text-transform:uppercase;">${d.severity}</span></td>
+          <td><span style="font-size:11px;color:${d.severity === 'critical' ? '#FF4D4D' : d.severity === 'high' ? '#FFA500' : '#22c55e'};">${d.severity === 'critical' ? '⚠ ALERT' : d.severity === 'high' ? '⚠ HIGH RISK' : '✓ MONITORED'}</span></td>
+        </tr>
+      `).join('');
+            }
+        }
+
+        function initCharts() {
+            const districts = window.TNDATA.getDistricts().sort((a, b) => b.accidents - a.accidents).slice(0, 10);
+            new Chart(document.getElementById('reports-bar-chart'), {
+                type: 'bar',
+                data: {
+                    labels: districts.map(d => d.name.length > 9 ? d.name.slice(0, 8) + '…' : d.name),
+                    datasets: [{ data: districts.map(d => d.accidents), backgroundColor: districts.map(d => sevColor[d.severity] + '90'), borderColor: districts.map(d => sevColor[d.severity]), borderWidth: 1, borderRadius: 4 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, animation: { duration: 800 }, plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(22,27,34,0.95)', borderColor: 'rgba(0,240,255,0.3)', borderWidth: 1, titleColor: '#00F0FF', bodyColor: '#dee2ec' } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#849495', font: { size: 10 }, maxRotation: 45 } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#849495' }, beginAtZero: true } } }
+            });
+
+            // Hourly distribution (simulated — typical Tamil Nadu pattern)
+            const hourlyData = [2, 1, 1, 1, 2, 3, 7, 11, 9, 6, 5, 5, 7, 5, 4, 4, 5, 9, 14, 12, 8, 6, 4, 3];
+            const hours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}h`);
+            const gradient = document.getElementById('hourly-chart').getContext('2d').createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(255,165,0,0.3)');
+            gradient.addColorStop(1, 'rgba(255,165,0,0)');
+            new Chart(document.getElementById('hourly-chart'), {
+                type: 'line',
+                data: { labels: hours, datasets: [{ data: hourlyData, borderColor: '#FFA500', backgroundColor: gradient, fill: true, tension: 0.4, pointRadius: 2, pointBackgroundColor: '#FFA500' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(22,27,34,0.95)', borderColor: 'rgba(255,165,0,0.3)', borderWidth: 1, titleColor: '#FFA500', bodyColor: '#dee2ec' } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#849495', font: { size: 10 }, maxTicksLimit: 8 } }, y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#849495' }, beginAtZero: true } } }
+            });
+        }
+
+        function exportCSV() {
+            const districts = window.TNDATA.getDistricts().sort((a, b) => b.riskScore - a.riskScore);
+            const header = 'Rank,District,Accidents,Fatalities,Injury Rate,Risk Score,Severity\n';
+            const rows = districts.map((d, i) =>
+                `${i + 1},${d.name},${d.accidents},${d.fatal},${d.accidents > 0 ? ((d.fatal / d.accidents) * 100).toFixed(1) + '%' : '0%'},${d.riskScore},${d.severity}`
+            ).join('\n');
+            const blob = new Blob([header + rows], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'tn_accident_report.csv'; a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        setInterval(() => { const el = document.getElementById('live-clock'); if (el) el.textContent = new Date().toLocaleTimeString('en-IN', { hour12: false }); }, 1000);
+        document.addEventListener('DOMContentLoaded', () => { updateReport(); initCharts(); document.addEventListener('tn:update', updateReport); });
+    </script>
+</body>
+
+</html>

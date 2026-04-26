@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TN ACCIDENT INTEL — Real-Time Dashboard</title>
+  <meta name="description"
+    content="Real-time road accident intelligence dashboard for Tamil Nadu — district-wise monitoring, live alerts, danger zone analysis." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- TOP NAV -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <nav class="topnav">
+    <div class="topnav-brand">
+      <span class="material-symbols-outlined">radar</span>
+      TN ACCIDENT INTEL
+    </div>
+    <div class="topnav-search">
+      <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-muted);">search</span>
+      <input type="text" placeholder="Search districts, incidents..." />
+    </div>
+    <div class="topnav-right">
+      <span id="live-clock" class="topnav-clock">—</span>
+      <button class="topnav-icon-btn notification-badge" id="notif-btn" title="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <button class="topnav-icon-btn" title="Account">
+        <span class="material-symbols-outlined">account_circle</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- LAYOUT -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div class="layout">
+
+    <!-- SIDE NAV -->
+    <aside class="sidenav">
+      <div class="sidenav-section-label">
+        OPERATIONS
+        <div class="sidenav-sub">CHENNAI HQ</div>
+      </div>
+      <nav class="sidenav-nav">
+        <a href="index.html" class="nav-link active">
+          <span class="material-symbols-outlined">dashboard</span>Real-time Dashboard
+        </a>
+        <a href="district-analysis.html" class="nav-link">
+          <span class="material-symbols-outlined">analytics</span>District Analysis
+        </a>
+        <a href="hotspot-maps.html" class="nav-link">
+          <span class="material-symbols-outlined">map</span>Hotspot Maps
+        </a>
+        <a href="reports.html" class="nav-link">
+          <span class="material-symbols-outlined">description</span>Reports
+        </a>
+      </nav>
+      <div class="sidenav-footer">
+        <a href="system-status.html" class="nav-link">
+          <span class="material-symbols-outlined">sensors</span>System Status
+        </a>
+        <a href="#" class="nav-link">
+          <span class="material-symbols-outlined">settings</span>Settings
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- ── KPI Cards ── -->
+      <div class="kpi-grid">
+        <!-- Total Accidents -->
+        <div class="kpi-card kpi-cyan glow-cyan">
+          <div class="kpi-label">
+            <span class="material-symbols-outlined" style="font-size:14px;">car_crash</span>
+            Total Accidents Today
+          </div>
+          <div class="kpi-value cyan" id="kpi-total">—</div>
+          <div class="kpi-sub">
+            <span class="material-symbols-outlined kpi-trend-up" style="font-size:14px;">trending_up</span>
+            <span class="kpi-trend-up">+12% vs yesterday</span>
+          </div>
+        </div>
+        <!-- Fatal Incidents -->
+        <div class="kpi-card kpi-red glow-red">
+          <div class="kpi-label">
+            <span class="material-symbols-outlined" style="font-size:14px;color:var(--secondary);">warning</span>
+            Fatal Incidents
+          </div>
+          <div class="kpi-value red" id="kpi-fatal">—</div>
+          <div class="kpi-sub">
+            <span class="live-dot"></span>
+            <span style="color:var(--secondary)">LIVE MONITORING</span>
+          </div>
+        </div>
+        <!-- Critical Zones -->
+        <div class="kpi-card kpi-orange">
+          <div class="kpi-label">
+            <span class="material-symbols-outlined" style="font-size:14px;color:var(--tertiary);">location_on</span>
+            Critical Zones Active
+          </div>
+          <div class="kpi-value orange" id="kpi-zones">—</div>
+          <div class="kpi-sub" style="color:var(--tertiary);">Districts in red alert</div>
+        </div>
+        <!-- Peak Hour -->
+        <div class="kpi-card kpi-cyan">
+          <div class="kpi-label">
+            <span class="material-symbols-outlined" style="font-size:14px;">schedule</span>
+            Peak Accident Hour
+          </div>
+          <div class="kpi-value white" style="font-size:22px;line-height:1.2;" id="kpi-peak">—</div>
+          <div class="kpi-sub" style="color:var(--primary);">⏰ High-risk window</div>
+        </div>
+        <!-- Emergency Alerts -->
+        <div class="kpi-card kpi-red">
+          <div class="kpi-label">
+            <span class="material-symbols-outlined" style="font-size:14px;color:var(--secondary);">emergency</span>
+            Emergency Alerts
+          </div>
+          <div class="kpi-value red" id="kpi-alerts">—</div>
+          <div class="kpi-sub">
+            <span class="live-dot"></span>
+            <span style="color:var(--secondary)">CRITICAL ACTIVE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Dashboard Grid ── -->
+      <div class="dashboard-grid">
+
+        <!-- MAP PANEL -->
+        <div class="glass-panel glow-cyan full-height center-left">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="live-dot"></span>
+              LIVE HOTSPOT MAP — TAMIL NADU
+            </div>
+            <div class="flex items-center gap-2" style="font-size:11px;">
+              <span style="color:#FF4D4D;">⬤ Critical</span>
+              <span style="color:#FFA500;">⬤ High</span>
+              <span style="color:#00F0FF;">⬤ Moderate</span>
+              <span style="color:#22c55e;">⬤ Low</span>
+            </div>
+          </div>
+          <div class="map-container">
+            <svg id="tn-map" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+        </div>
+
+        <!-- ALERTS PANEL -->
+        <div class="glass-panel glow-red full-height center-right">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="live-dot"></span>
+              LIVE ALERTS
+              <span class="panel-badge live">LIVE</span>
+            </div>
+            <button class="btn btn-ghost" style="padding:4px 8px;font-size:10px;"
+              onclick="document.getElementById('alerts-list').scrollTop=0">
+              <span class="material-symbols-outlined" style="font-size:14px;">filter_list</span>
+            </button>
+          </div>
+          <div class="alerts-feed">
+            <div class="alerts-list" id="alerts-list"></div>
+          </div>
+        </div>
+
+        <!-- BOTTOM CHARTS ROW -->
+        <div class="bottom-charts">
+
+          <!-- Trend Line Chart -->
+          <div class="glass-panel full-height">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="material-symbols-outlined" style="font-size:15px;">show_chart</span>
+                ACCIDENT TREND — LAST 24H
+              </div>
+            </div>
+            <div class="panel-body" style="flex:1;min-height:0;padding-bottom:12px;">
+              <div class="chart-wrapper" style="height:200px;">
+                <canvas id="trend-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- District Bar Chart -->
+          <div class="glass-panel full-height">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="material-symbols-outlined" style="font-size:15px;">bar_chart</span>
+                DISTRICT ACCIDENTS
+              </div>
+            </div>
+            <div class="panel-body" style="flex:1;min-height:0;padding-bottom:12px;">
+              <div class="chart-wrapper" style="height:200px;">
+                <canvas id="bar-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top 5 Leaderboard -->
+          <div class="glass-panel full-height">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span class="material-symbols-outlined" style="font-size:15px;color:#FFA500;">leaderboard</span>
+                TOP 5 DANGER ZONES
+              </div>
+            </div>
+            <div id="top5-list" class="top5-list" style="flex:1;overflow-y:auto;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── District Risk Ranking (below the grid) ── -->
+      <div class="glass-panel" style="margin-top:12px;">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="material-symbols-outlined" style="font-size:15px;">format_list_numbered</span>
+            DISTRICT RISK RANKING
+          </div>
+          <a href="district-analysis.html" class="btn btn-ghost" style="padding:4px 10px;font-size:11px;">
+            View All <span class="material-symbols-outlined" style="font-size:13px;">arrow_forward</span>
+          </a>
+        </div>
+        <div id="district-ranking" class="panel-body"
+          style="max-height:220px;overflow-y:auto;padding-top:8px;padding-bottom:8px;"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SCRIPTS -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script src="js/api.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Charts are initialized after first data arrives
+      const trend = await window.TNAPI.getHourlyTrend();
+      const labels = trend.map(t => t.hour);
+      const data = trend.map(t => t.count);
+      window.TNCharts.initTrendChart('trend-chart');
+      if (labels.length) window.TNCharts.updateTrendFromAPI(labels, data);
+
+      const districts = await window.TNAPI.getDistricts('risk_score');
+      window.TNCharts.initBarChart('bar-chart');
+      if (districts.length) window.TNCharts.updateBarFromAPI(districts.slice(0, 12));
+
+      // Map init
+      const markers = await window.TNAPI.getMapMarkers();
+      window.TNMap.renderFromAPI ? window.TNMap.renderFromAPI('tn-map', markers) : window.TNMap.render('tn-map');
+    });
+  </script>
+
+</body>
+
+</html>
